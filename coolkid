@@ -1,0 +1,72 @@
+local damagePart = script.Parent
+local damageAmount = 50
+
+local function onTouch(otherPart)
+    local character = otherPart.Parent
+    local humanoid = character:FindFirstChild("Humanoid")
+    
+    if humanoid then
+        humanoid:TakeDamage(damageAmount)
+    end
+end
+
+damagePart.Touched:Connect(onTouch)
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+local button = script.Parent 
+
+local dashSpeed = 100
+local dashDuration = 0.2
+
+local function dash()
+    local velocity = Instance.new("LinearVelocity")
+    local attachment = Instance.new("Attachment")
+    attachment.Parent = rootPart
+    
+    velocity.MaxForce = Vector3.new(1, 0, 1) * 100000
+    velocity.VectorVelocity = rootPart.CFrame.LookVector * dashSpeed
+    velocity.Attachment0 = attachment
+    velocity.Parent = rootPart
+
+    task.wait(dashDuration)
+    
+    velocity:Destroy()
+    attachment:Destroy()
+end
+
+button.Activated:Connect(dash)
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+local button = script.Parent 
+
+local function onPizzaDelivery()
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    local pizzaModel = replicatedStorage:FindFirstChild("Pizza")
+
+    if pizzaModel then
+        local newPizza = pizzaModel:Clone()
+        newPizza.CFrame = rootPart.CFrame * CFrame.new(0, 0, -5)
+        newPizza.Parent = workspace
+    else
+        warn("Pizza model not found in ReplicatedStorage!")
+    end
+end
+
+button.Activated:Connect(onPizzaDelivery)
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- استفاده از Description برای تغییر ظاهر کاراکتر
+local descriptionClone = humanoid:GetAppliedDescription()
+
+-- آیدی‌های مربوط به لباس و ظاهر کول‌کید
+descriptionClone.Shirt = 0 -- آیدی تیشرت کول‌کید
+descriptionClone.Pants = 0 -- آیدی شلوار کول‌کید
+
+humanoid:ApplyDescription(descriptionClone)
